@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
@@ -15,22 +16,25 @@ namespace tpmodul6_103022300035
 
         public SayaTubeVideo(string title)
         {
-            Contract.Requires(title != null, "Judul video tidak boleh null.");
-            Contract.Requires(title.Length <= 100, "Judul video tidak boleh lebih dari 100 karakter.");
+            if (title == null)
+                throw new ArgumentNullException("Judul video tidak boleh null.");
+            if (title.Length > 100)
+                throw new ArgumentException("Judul video tidak boleh lebih dari 100 karakter.");
 
             Random rand = new Random();
             this.id = rand.Next(10000, 99999);
             this.title = title;
             this.playCount = 0;
 
-            Contract.Ensures(this.title == title, "Judul harus sesuai dengan input.");
-            Contract.Ensures(this.playCount == 0, "Play count harus diinisialisasi ke 0.");
+            ValidateInvariant();
         }
 
         public void IncreasePlayCount(int increment)
         {
-            Contract.Requires(increment > 0, "Penambahan play count harus lebih dari 0.");
-            Contract.Requires(increment <= 10000000, "Penambahan play count tidak boleh lebih dari 10.000.000.");
+            if (increment <= 0)
+                throw new ArgumentException("Penambahan play count harus lebih dari 0.");
+            if (increment > 10000000)
+                throw new ArgumentException("Penambahan play count tidak boleh lebih dari 10.000.000.");
 
             try
             {
@@ -44,7 +48,7 @@ namespace tpmodul6_103022300035
                 Console.WriteLine("ERROR: Play count melebihi batas integer.");
             }
 
-            Contract.Ensures(this.playCount >= 0, "Play count harus selalu positif.");
+            ValidateInvariant();
         }
 
         public void PrintVideoDetails()
@@ -54,13 +58,11 @@ namespace tpmodul6_103022300035
             Console.WriteLine($"Play Count: {playCount}");
         }
 
-        [ContractInvariantMethod]
-        private void ObjectInvariant()
+        private void ValidateInvariant()
         {
-            Contract.Invariant(this.id >= 10000 && this.id <= 99999, "ID harus 5 digit.");
-            Contract.Invariant(this.playCount >= 0, "Play count tidak boleh negatif.");
-            Contract.Invariant(!string.IsNullOrEmpty(this.title), "Judul tidak boleh kosong.");
+            Debug.Assert(this.id >= 10000 && this.id <= 99999, "ID harus 5 digit.");
+            Debug.Assert(this.playCount >= 0, "Play count tidak boleh negatif.");
+            Debug.Assert(!string.IsNullOrEmpty(this.title), "Judul tidak boleh kosong.");
         }
     }
-
 }
