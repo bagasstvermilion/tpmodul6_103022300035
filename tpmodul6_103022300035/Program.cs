@@ -7,7 +7,12 @@ class Program
         SayaTubeVideo video = new SayaTubeVideo("Tutorial Design By Contract - Bagas Pratama");
 
         video.PrintVideoDetails();
-        video.IncreasePlayCount(100);
+        video.IncreasePlayCount(10000000);
+        video.PrintVideoDetails();
+        Console.WriteLine();
+
+        video.IncreasePlayCount(int.MaxValue);
+        Console.WriteLine();
         video.PrintVideoDetails();
     }
 }
